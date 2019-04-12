@@ -1,56 +1,60 @@
 $(document).ready(() => {
 
-	$("#btn-filtrar").click(() => {
+    $("#btn-filtrar").click(() => {
 
-		var input = $("#filtro").val();
+        $("#tabla tbody").empty();
 
-		fetch('https://api.shodan.io/shodan/host/search?key=API_KEY&query={'+input+'}')
-	    .then(data => data.json())
-	    .then(data => {
+        var input = $("#filtro").val();
 
-	        var matches = data.matches;
-	        //console.log(matches);
+        fetch('https://api.shodan.io/shodan/host/search?key=API_KEY&query={' + input + '}')
+            .then(data => data.json())
+            .then(data => {
 
-	        for (var i = 0; i < matches.length; i++) {
-	        	console.log(i, "IP: "+ matches[i].ip_str + "  Pais: " + matches[i].location.country_name 
-	        		+ "  Producto: " + matches[i].product);
-	        }
+                var matches = data.matches;
+                //console.log(matches);
 
-	        colocarElementosEnTablaHTML(matches);
+                for (var i = 0; i < matches.length; i++) {
+                    console.log(i, "IP: " + matches[i].ip_str + "  Pais: " + matches[i].location.country_name +
+                        "  Producto: " + matches[i].product);
+                }
 
-	    });
-	});
-	
-    
+                colocarElementosEnTablaHTML(matches);
+
+            });
+    });
+
+
 
 });
 
 
 // https://api.shodan.io/shodan/host/search?key={YOUR_API_KEY}&query={query}&facets={facets}
 
-function colocarElementosEnTablaHTML (elementos) {
-	var tabla = $("#tabla");
+function colocarElementosEnTablaHTML(elementos) {
+    var tabla = $("#tabla");
+    var cuerpo_tabla = document.createElement("tbody");
 
-	for (var i = 0; i < elementos.length; i++) {
-		
-		var tr = document.createElement("tr");
-		var ip = document.createElement("td");
-		var pais = document.createElement("td");
-		var producto = document.createElement("td");
+    for (var i = 0; i < elementos.length; i++) {
 
-		ip.innerHTML = elementos[i].ip_str;
-		pais.innerHTML = elementos[i].location.country_name;
-		producto.innerHTML = elementos[i].product;
+        var tr = document.createElement("tr");
+        var ip = document.createElement("td");
+        var pais = document.createElement("td");
+        var producto = document.createElement("td");
 
-		tr.append(ip);
-		tr.append(pais);
-		tr.append(producto);
+        ip.innerHTML = elementos[i].ip_str;
+        pais.innerHTML = elementos[i].location.country_name;
+        producto.innerHTML = elementos[i].product;
 
-		if((i%2) == 0)
-		{
-			tr.style.background = 'grey';
-		}
+        tr.append(ip);
+        tr.append(pais);
+        tr.append(producto);
 
-		tabla.append(tr);
-	}
+        if ((i % 2) == 0) {
+            tr.style.background = 'grey';
+        }
+
+        cuerpo_tabla.append(tr);
+    }
+
+    tabla.append(cuerpo_tabla);
 }
